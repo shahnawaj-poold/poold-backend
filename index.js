@@ -10,6 +10,7 @@ app.use('/analyze-job-desc', require('./service/analyze-job-desc'));
 app.use('/transcribe-audio', require('./service/transcribe-audio'));
 app.use('/tts-labs', require('./service/tts-elevenlabs'));
 app.use('/generate-questions', require('./service/generate-questions'));
+app.use('/delete-user-account', require('./service/delete-user-account'));
 // Sample route
 app.get('/', (req, res) => {
   res.send('Hello World!');
