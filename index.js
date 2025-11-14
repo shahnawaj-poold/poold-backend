@@ -6,6 +6,7 @@ const port = 3000;
 app.use(express.json());
 
 app.use('/parse-cv', require('./service/parse-cv'));
+app.use('/analyze-job-desc', require('./service/analyze-job-desc'));
 // Sample route
 app.get('/', (req, res) => {
   res.send('Hello World!');
