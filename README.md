@@ -87,6 +87,21 @@ API routes (HTTP)
       }'
     ```
     Returns: `{ summary: { overallScore: 85, recommendation: "hire", technicalSkills: {...}, softSkills: {...}, ... } }`
+- `POST /parse-cv-content` — Parse CV text and extract structured information. JSON body: `{ cvText: "...", model: "gpt-4o-mini" }`. Returns parsed CV with personal info, experience, education, skills, certifications, projects.
+  - Example (curl):
+    ```bash
+    curl -X POST http://localhost:3000/parse-cv-content \
+      -H "Content-Type: application/json" \
+      -d '{"cvText":"John Doe\nSenior Developer with 5 years Node.js experience...","model":"gpt-4o-mini"}'
+    ```
+- `POST /realtime-session` — Create an ephemeral OpenAI Realtime API session for live audio/text interviewing with Maya. Returns session token, token expiry, and connection details. JSON body: `{}` (empty).
+  - Example (curl):
+    ```bash
+    curl -X POST http://localhost:3000/realtime-session \
+      -H "Content-Type: application/json" \
+      -d '{}'
+    ```
+    Returns: `{ "id": "sess_...", "object": "realtime.session", "model": "gpt-4o-realtime-preview-2024-12-17", "expires_at": 1234567890, "modalities": ["audio", "text"], "voice": "verse", ... }`
 
 Each route sets permissive CORS headers (for local testing). See individual route files under `service/` for parameter details and limits.
 
