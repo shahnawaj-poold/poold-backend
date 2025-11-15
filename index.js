@@ -13,6 +13,8 @@ app.use('/transcribe-audio', require('./service/transcribe-audio'));
 app.use('/tts-labs', require('./service/tts-elevenlabs'));
 app.use('/generate-questions', require('./service/generate-questions'));
 app.use('/delete-user-account', require('./service/delete-user-account'));
+app.use('/analyze-response', require('./service/analyze-response'));
+app.use('/generate-summary', require('./service/generate-summary'));
 
 // Require the interview module once and mount its router
 let interviewModule;

@@ -71,6 +71,22 @@ API routes (HTTP)
 - `POST /generate-questions` — Generate interview questions from jobDescription/candidateProfile.
 - `POST /delete-user-account` — Admin delete user via Supabase. Include `Authorization: Bearer <access_token>` header.
 - `POST /analyze-response` — Analyze a candidate's response. JSON body: `{ question: "...", response: "...", context: {...} }`.
+- `POST /generate-summary` — Generate a comprehensive final interview assessment from complete session data. JSON body: `{ interviewData: { candidate: {...}, job: {...}, transcript: [...], evidence: {...} }, model: "gpt-4o" }`. Returns detailed scoring with recommendation, technical/soft skills assessment, red flags, and next steps.
+  - Example (curl):
+    ```bash
+    curl -X POST http://localhost:3000/generate-summary \
+      -H "Content-Type: application/json" \
+      -d '{
+        "interviewData": {
+          "candidate": { "name": "John Doe", "experience": 5 },
+          "job": { "must_haves": ["React", "Node.js"], "nice_haves": ["TypeScript"] },
+          "transcript": [{"speaker": "interviewer", "text": "Tell me about React"}, {"speaker": "candidate", "text": "I have 5 years with React..."}],
+          "evidence": { "React": [{"quote": "5 years experience", "timestamp": "0:15"}] }
+        },
+        "model": "gpt-4o-mini"
+      }'
+    ```
+    Returns: `{ summary: { overallScore: 85, recommendation: "hire", technicalSkills: {...}, softSkills: {...}, ... } }`
 
 Each route sets permissive CORS headers (for local testing). See individual route files under `service/` for parameter details and limits.
 
