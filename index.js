@@ -15,7 +15,7 @@ app.use('/generate-questions', require('./service/generate-questions'));
 app.use('/delete-user-account', require('./service/delete-user-account'));
 app.use('/analyze-response', require('./service/analyze-response'));
 app.use('/generate-summary', require('./service/generate-summary'));
-
+app.use('/parse-cv-content', require('./service/parse-cv-content'));
 // Require the interview module once and mount its router
 let interviewModule;
 try {
