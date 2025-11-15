@@ -8,15 +8,18 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use('/parse-cv', require('./service/parse-cv'));
+app.use('/upload-cv', require('./service/upload-cv'));
 app.use('/analyze-job-desc', require('./service/analyze-job-desc'));
 app.use('/transcribe-audio', require('./service/transcribe-audio'));
 app.use('/tts-labs', require('./service/tts-elevenlabs'));
 app.use('/generate-questions', require('./service/generate-questions'));
 app.use('/delete-user-account', require('./service/delete-user-account'));
 app.use('/analyze-response', require('./service/analyze-response'));
+app.use('/validate-answer-duration', require('./service/validate-answer-duration'));
 app.use('/generate-summary', require('./service/generate-summary'));
 app.use('/parse-cv-content', require('./service/parse-cv-content'));
 app.use('/realtime-session', require('./service/realtime-session'));
+app.use('/save-maya-interview', require('./service/save-maya-interview'));
 // Require the interview module once and mount its router
 let interviewModule;
 try {

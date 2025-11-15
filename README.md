@@ -65,12 +65,30 @@ API routes (HTTP)
     ```bash
     curl -X POST -F "file=@/path/to/cv.pdf" http://localhost:3000/parse-cv
     ```
+- `POST /upload-cv` — Upload and store CV file to Supabase storage bucket. Accepts multipart `file` (PDF or DOCX). Returns file path, signed URL, and metadata.
+  - Example (curl + form):
+    ```bash
+    curl -X POST -F "file=@/path/to/resume.pdf" http://localhost:3000/upload-cv
+    ```
+    Returns: `{ "ok": true, "file_path": "uploads/uuid.pdf", "url": "https://...", "file_name": "resume.pdf", "file_size": 125000, "content_type": "application/pdf" }`
 - `POST /analyze-job-desc` — Analyze job description (text or base64 document). JSON body: `{ jobDescription: "..." }` or `{ fileData: "<base64>", fileName: "...pdf" }`.
 - `POST /transcribe-audio` — Transcribe base64 audio. JSON body: `{ audio: "data:...;base64,<base64>", mimeType: "audio/webm" }`.
 - `POST /tts-labs` — ElevenLabs TTS. JSON body: `{ text: "...", voiceId: "<id>" }`. Returns `audio/mpeg` binary response.
 - `POST /generate-questions` — Generate interview questions from jobDescription/candidateProfile.
 - `POST /delete-user-account` — Admin delete user via Supabase. Include `Authorization: Bearer <access_token>` header.
 - `POST /analyze-response` — Analyze a candidate's response. JSON body: `{ question: "...", response: "...", context: {...} }`.
+- `POST /validate-answer-duration` — Validate interview answer meets minimum duration (10s) and word count (5+ words). JSON body: `{ answerText: "...", durationSeconds: 15, questionIndex: 0 }`.
+  - Example (curl):
+    ```bash
+    curl -X POST http://localhost:3000/validate-answer-duration \
+      -H "Content-Type: application/json" \
+      -d '{
+        "answerText": "I have five years of experience working with React and Node.js in production environments",
+        "durationSeconds": 12,
+        "questionIndex": 0
+      }'
+    ```
+    Returns: `{ "isValid": true, "durationSeconds": 12, "meetsMinimumDuration": true, "wordCount": 15, "hasMeaningfulContent": true, "feedback": "Answer accepted" }`
 - `POST /generate-summary` — Generate a comprehensive final interview assessment from complete session data. JSON body: `{ interviewData: { candidate: {...}, job: {...}, transcript: [...], evidence: {...} }, model: "gpt-4o" }`. Returns detailed scoring with recommendation, technical/soft skills assessment, red flags, and next steps.
   - Example (curl):
     ```bash
@@ -102,6 +120,24 @@ API routes (HTTP)
       -d '{}'
     ```
     Returns: `{ "id": "sess_...", "object": "realtime.session", "model": "gpt-4o-realtime-preview-2024-12-17", "expires_at": 1234567890, "modalities": ["audio", "text"], "voice": "verse", ... }`
+- `POST /save-maya-interview` — Save completed Maya interview session to Supabase `maya_interviews` table. JSON body: `{ session_id: "...", candidate_name: "...", candidate_phone: "...", started_at: "...", ended_at: "...", duration_seconds: 300, questions: [...], responses: [...], transcript: [...] }`.
+  - Example (curl):
+    ```bash
+    curl -X POST http://localhost:3000/save-maya-interview \
+      -H "Content-Type: application/json" \
+      -d '{
+        "session_id": "sess_abc123",
+        "candidate_name": "John Doe",
+        "candidate_phone": "+1-555-0123",
+        "started_at": "2025-11-15T10:00:00Z",
+        "ended_at": "2025-11-15T10:05:00Z",
+        "duration_seconds": 300,
+        "questions": ["Tell me about yourself?", "Describe a challenge you faced"],
+        "responses": ["I am a software engineer with 5 years experience", "Once I had to debug..."],
+        "transcript": [{"speaker": "maya", "text": "Hello..."}, {"speaker": "candidate", "text": "Hi there"}]
+      }'
+    ```
+    Returns: `{ "success": true, "data": [...] }`
 
 Each route sets permissive CORS headers (for local testing). See individual route files under `service/` for parameter details and limits.
 
